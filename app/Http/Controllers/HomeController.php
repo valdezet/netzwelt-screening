@@ -9,48 +9,51 @@ use Inertia\Inertia;
 
 class HomeController extends Controller
 {
+
     //
     public function __invoke()
     {
+        $territories = $this->keyById($this->fetchTerritories());
+        $this->sortTerritories($territories);
+        $territories = $this->nest($territories);
 
-        $territories = collect($this->fetchTerritories())->keyBy('id');
-        $territories = $this->discoverDepth($territories);
-        $territories = $this->sortTerritories($territories);
-        dd($territories);
         return Inertia::render('Home');
     }
 
     private function fetchTerritories(): array
     {
-        return Http::get("https://netzwelt-devtest.azurewebsites.net/Territories/All")->json()['data'];
+        $territories = Http::get("https://netzwelt-devtest.azurewebsites.net/Territories/All")
+            ->json()['data'];
+        return $territories;
     }
 
-    private function nest(Collection $territories): array
+    private function keyById($territories)
     {
-        // WIP
+        $keyed = [];
+        foreach ($territories as $val) {
+            $keyed[$val['id']] = $val;
+        }
+        return $keyed;
     }
 
-    private function sortTerritories(Collection $territories)
+    private function sortTerritories(&$territories)
     {
-        return $territories->sortBy([
-            ['depth', 'desc'],
-            ['id', 'asc']
-        ]);
+        asort($territories, SORT_NUMERIC);
     }
 
-    private function discoverDepth(Collection $territories): Collection
+    private function nest($territories)
     {
-        return $territories->map(function ($item) use ($territories) {
-            // calculate depth
-            $depth = 0;
-            $cursor = $item;
-            while ($parent_id = $cursor['parent']) {
-                $depth += 1;
-                $cursor = $territories[$parent_id];
+        $nested = [];
+        foreach ($territories as $key => $val) {
+            if ($parent = $val['parent']) {
+                $territories[$parent]['children'][$key] = $val;
             }
-            // add property and return
-            $item['depth'] = $depth;
-            return $item;
-        });
+        }
+        foreach ($territories as $key => $val) {
+            if (!($val['parent'] ?? null)) {
+                $nested[$key] = $val;
+            }
+        }
+        return $nested;
     }
 }
