@@ -17,7 +17,7 @@
 
 .login-form {
     border: 2px solid #ABABAB;
-    padding: 2pm 1.5em;
+    padding: 2em 1.5em;
 }
 
 .form-element {
@@ -28,4 +28,11 @@
 .right-element-wrapper {
     display: flex;
     justify-content: end;
+}
+
+.error-box {
+    margin: 1em;
+    padding: 0.125em 0.5em;
+    background-color: pink;
+    border: 2px dotted maroon;
 }
