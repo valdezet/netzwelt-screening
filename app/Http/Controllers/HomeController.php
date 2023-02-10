@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
@@ -47,8 +45,13 @@ class HomeController extends Controller
     {
         $nested = [];
         foreach ($territories as $key => $val) {
-            if ($parent = $val['parent']) {
-                $territories[$parent]['children'][$key] = $val;
+            $cursor = $val;
+            while ($cursor) {
+                $parent_id = $cursor['parent'] ?? null;
+                if ($parent_id) {
+                    $territories[$parent_id]['children'][$cursor['id']] = $cursor;
+                }
+                $cursor = $territories[$parent_id] ?? null;
             }
         }
         foreach ($territories as $key => $val) {

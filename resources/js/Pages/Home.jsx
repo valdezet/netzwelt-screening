@@ -4,6 +4,7 @@ function ListItem({obj}) {
     let [expanded, setExpanded] = useState(false);
 
     let onListClick = (e) => {
+        e.stopPropagation();
         setExpanded(!expanded);
     }
 
