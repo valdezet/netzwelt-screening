@@ -30,8 +30,9 @@ class AuthenticationService
 
     public function isAuthenticated(): bool
     {
-        return $this->request->exists('userdata');
+        return $this->request->session()->has('userdata');
     }
+
 
     private function saveToSession($user_data)
     {

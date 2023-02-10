@@ -34,8 +34,9 @@ class LoginController extends Controller
             'username' => $username,
             'password' => $password
         ] = $request->all();
+
         if ($this->auth_service->authenticate($username, $password)) {
-            return redirect()->to("/", 304);
+            return redirect()->to("/");
         } else {
             return redirect()->to('/account/login')->withErrors([
                 'error_message' => 'Invalid username or password.'
