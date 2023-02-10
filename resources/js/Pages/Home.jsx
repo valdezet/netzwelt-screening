@@ -1,11 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+
+function ListItem({obj}) {
+    let [expanded, setExpanded] = useState(false);
+
+    let onListClick = (e) => {
+        setExpanded(!expanded);
+    }
+
+    let {name, children} = obj;
+
+    let liClasses = () => {
+        return "list-item " + (children && (expanded ? "expanded" : "collapsed"));
+    }
+
+    return <li className={liClasses()} onClick={onListClick}>
+        {name}
+        {children && expanded ? <>
+            <List object={children}/>
+        </>  : <></>}
+    </li>
+}
 
 function List({object}) {
     return Object.values(object).map(obj => <ul key={obj.id}>
-        <li>
-            {obj.name}
-            {obj?.children ? <List object={obj.children}/> : <></>}
-        </li>
+        <ListItem obj={obj}/>
     </ul>)
 }
 

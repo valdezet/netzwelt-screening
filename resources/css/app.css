@@ -36,3 +36,17 @@
     background-color: pink;
     border: 2px dotted maroon;
 }
+
+.list-item {
+    list-style: none
+}
+.list-item.collapsed:before {
+    content: 'chevron_right';
+    font-family: 'Material Icons';
+}
+
+.list-item.expanded:before {
+    content: 'expand_more';
+    font-family: 'Material Icons';
+
+}
