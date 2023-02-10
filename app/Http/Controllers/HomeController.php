@@ -17,7 +17,9 @@ class HomeController extends Controller
         $this->sortTerritories($territories);
         $territories = $this->nest($territories);
 
-        return Inertia::render('Home');
+        return Inertia::render('Home', [
+            'territories' => $territories
+        ]);
     }
 
     private function fetchTerritories(): array
