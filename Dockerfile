@@ -1,11 +1,13 @@
 # Use the official PHP image as the base image
 FROM php:8.1-apache
 
+
 # Copy the application files into the container
-COPY . /var/www/html
+COPY . /var/www
 
 # Set the working directory in the container
-WORKDIR /var/www/html
+WORKDIR /var/www
+
 
 
 # Install necessary PHP extensions
@@ -31,12 +33,19 @@ RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" |
     && nvm use --lts \
     && npm install --dev && npx vite build
 
-ENV NODE_PATH $NVM_INSTALL_PATH/lib/node_modules
-ENV PATH $NVM_INSTALL_PATH/bin:$PATH
+# ENV NODE_PATH $NVM_INSTALL_PATH/lib/node_modules
+# ENV PATH $NVM_INSTALL_PATH/bin:$PATH
 
 # RUN [ -s "${HOME}/.nvm/nvm.sh" ] && \. "${HOME}/.nvm/nvm.sh"
 
+RUN chown $USER:www-data -R bootstrap
+RUN chown $USER:www-data -R storage
+RUN chmod 775 -R bootstrap
+RUN chmod 775 -R storage
 
+# run cp public/* html/
+
+RUN cp -r public/. html
 
 # Expose port 80
 EXPOSE 80
